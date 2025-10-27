@@ -1,0 +1,128 @@
+/* General Page Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #dff6e3; /* soft green */
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  text-align: center;
+  padding: 1rem;
+  background-color: #c9f0d9; /* slightly darker green */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+  margin: 0;
+  color: #2f6b2f; /* deeper green for contrast */
+}
+
+/* Search Form */
+form {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+input[type="text"] {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px 0 0 10px;
+  border: 2px solid #aaa;
+  outline: none;
+  width: 250px;
+}
+
+input[type="text"]:focus {
+  border-color: #7c6eff; /* lavender accent on focus */
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #aaa;
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  background-color: #9ae6b4; /* soft green button */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #82c99e; /* slightly darker green */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* shadow under hover */
+}
+
+/* Results Section */
+#results {
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual Word Entry */
+.word-entry {
+  background-color: #f0fff4; /* very light green */
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.4s ease-out; /* fade-in animation */
+}
+
+.word-entry:hover {
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2); /* darker shadow under hover */
+}
+
+/* Successful Search Box */
+.success {
+  border: 2px solid #c5b3ff; /* soft lavender ring */
+  box-shadow: 0 0 10px rgba(197, 179, 255, 0.5);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+
+/* Error / Failed Search Box */
+.error {
+  border: 2px solid #ff6b6b; /* soft red */
+  background-color: #ffeaea;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #900;
+  font-weight: bold;
+}
+
+/* Headings in Results */
+.word-entry h2 {
+  margin: 0;
+  color: #2f6b2f;
+}
+
+.word-entry h3 {
+  margin: 0.5rem 0 0.2rem 0;
+  color: #4a7c4a;
+}
+
+/* Paragraphs in Results */
+.word-entry p {
+  margin: 0.2rem 0;
+}
+
+/* Audio Player Styling */
+audio {
+  margin-top: 0.5rem;
+  width: 100%;
+  outline: none;
+  border-radius: 6px;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
