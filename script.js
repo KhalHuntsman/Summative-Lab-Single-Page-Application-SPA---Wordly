@@ -1,6 +1,7 @@
 const form = document.getElementById('search-form');
 const input = document.getElementById('search-input');
-const results = document.getElementById('results');
+const topWordContainer = document.getElementById('top-word-container');
+const posSectionsContainer = document.getElementById('pos-sections-container');
 
 form.addEventListener('submit', handleSearch);
 
@@ -25,63 +26,115 @@ async function fetchWord(word) {
   }
 }
 
-function displayWord(data) {
-  results.innerHTML = ''; // Clear previous results
-
-  data.forEach((entry, index) => {
-    const wordDiv = document.createElement('div');
-    wordDiv.className = 'word-entry success'; // Add success class
-
-    // Staggered animation delay
-    wordDiv.style.animationDelay = `${index * 0.1}s`;
-
-    // Word and pronunciation
-    const wordName = document.createElement('h2');
-    wordName.textContent = entry.word;
-    wordDiv.appendChild(wordName);
-
-    if (entry.phonetics[0]?.text) {
-      const phonetic = document.createElement('p');
-      phonetic.textContent = `Pronunciation: ${entry.phonetics[0].text}`;
-      wordDiv.appendChild(phonetic);
-    }
-
-    if (entry.phonetics[0]?.audio) {
-      const audio = document.createElement('audio');
-      audio.controls = true;
-      audio.src = entry.phonetics[0].audio;
-      wordDiv.appendChild(audio);
-    }
-
-    // Meanings and definitions
-    entry.meanings.forEach(meaning => {
-      const pos = document.createElement('h3');
-      pos.textContent = meaning.partOfSpeech;
-      wordDiv.appendChild(pos);
-
-      meaning.definitions.forEach(def => {
-        const defP = document.createElement('p');
-        defP.textContent = `Definition: ${def.definition}`;
-        wordDiv.appendChild(defP);
-
-        if (def.example) {
-          const exampleP = document.createElement('p');
-          exampleP.textContent = `Example: ${def.example}`;
-          wordDiv.appendChild(exampleP);
-        }
-
-        if (def.synonyms?.length) {
-          const synP = document.createElement('p');
-          synP.textContent = `Synonyms: ${def.synonyms.join(', ')}`;
-          wordDiv.appendChild(synP);
-        }
-      });
-    });
-
-    results.appendChild(wordDiv);
+// Hover effect for Z-axis card movement
+function addCardMouseEffect(innerCard) {
+  innerCard.addEventListener('mouseenter', () => {
+    innerCard.style.transform = `translateZ(40px)`;
+  });
+  innerCard.addEventListener('mouseleave', () => {
+    innerCard.style.transform = `translateZ(0)`;
   });
 }
 
+function displayWord(data) {
+  topWordContainer.innerHTML = '';
+  posSectionsContainer.innerHTML = '';
+
+  if (!data.length) return;
+
+  const firstEntry = data[0];
+
+  // --- Top word card ---
+  const wordCard = document.createElement('div');
+  wordCard.className = 'word-card top-word-card';
+
+  const wordInner = document.createElement('div');
+  wordInner.className = 'card-inner';
+
+  const wordName = document.createElement('h2');
+  wordName.textContent = firstEntry.word;
+  wordInner.appendChild(wordName);
+
+  if (firstEntry.phonetics[0]?.text) {
+    const phonetic = document.createElement('p');
+    phonetic.textContent = `Pronunciation: ${firstEntry.phonetics[0].text}`;
+    wordInner.appendChild(phonetic);
+  }
+
+  wordCard.appendChild(wordInner);
+
+  // --- Audio playback ---
+  if (firstEntry.phonetics[0]?.audio) {
+    const audioContainer = document.createElement('div');
+    audioContainer.style.textAlign = 'center';
+    audioContainer.style.marginTop = '0.5rem';
+
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = firstEntry.phonetics[0].audio;
+    audio.preload = "auto";
+    audioContainer.appendChild(audio);
+
+    wordCard.appendChild(audioContainer);
+  }
+
+  topWordContainer.appendChild(wordCard);
+
+  // --- Merge POS across all entries ---
+  const posMap = {};
+  data.forEach(entry => {
+    entry.meanings.forEach(meaning => {
+      const pos = meaning.partOfSpeech;
+      if (!posMap[pos]) posMap[pos] = [];
+      meaning.definitions.forEach(def => posMap[pos].push(def));
+    });
+  });
+
+  // --- Render all POS columns in a single container ---
+  const posContainer = document.createElement('div');
+  posContainer.className = 'pos-container';
+
+  Object.keys(posMap).forEach(pos => {
+    const posColumn = document.createElement('div');
+
+    const posHeader = document.createElement('h3');
+    posHeader.className = 'card-pos';
+    posHeader.textContent = pos.charAt(0).toUpperCase() + pos.slice(1) + 's';
+    posColumn.appendChild(posHeader);
+
+    posMap[pos].forEach(def => {
+      const defCard = document.createElement('div');
+      defCard.className = 'word-card';
+
+      const defInner = document.createElement('div');
+      defInner.className = 'card-inner';
+      defInner.innerHTML = `<span class="label">Definition:</span> ${def.definition}`;
+
+      if (def.example) {
+        const exampleP = document.createElement('p');
+        exampleP.className = 'example';
+        exampleP.innerHTML = `<span class="label">Example:</span> ${def.example}`;
+        defInner.appendChild(exampleP);
+      }
+
+      defCard.appendChild(defInner);
+      posColumn.appendChild(defCard);
+      addCardMouseEffect(defInner);
+    });
+
+    posContainer.appendChild(posColumn);
+  });
+
+  posSectionsContainer.appendChild(posContainer);
+}
+
+// --- Error handler ---
 function handleError(message) {
-  results.innerHTML = `<div class="word-entry error">${message}</div>`;
+  topWordContainer.innerHTML = '';
+  posSectionsContainer.innerHTML = '';
+  topWordContainer.innerHTML = `<div class="word-card">
+    <div class="card-inner" style="border: 2px solid #ff6b6b; background-color: #ffeaea; color: #900; text-align:center; font-weight:bold;">
+      ${message}
+    </div>
+  </div>`;
 }

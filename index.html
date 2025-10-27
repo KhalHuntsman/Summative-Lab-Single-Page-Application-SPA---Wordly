@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wordly Dictionary</title>
+  <title>Wordly Dictionary SPA</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,16 +11,17 @@
     <h1>Wordly Dictionary</h1>
   </header>
 
-  <main>
-    <form id="search-form">
-      <input type="text" id="search-input" placeholder="Enter a word..." aria-label="Search Word">
-      <button type="submit">Search</button>
-    </form>
+  <!-- Search form -->
+  <form id="search-form">
+    <input type="text" id="search-input" placeholder="Enter a word" aria-label="Word to search">
+    <button type="submit">Search</button>
+  </form>
 
-    <section id="results">
-      <!-- Dynamic content (definitions, synonyms, pronunciation, audio) will appear here -->
-    </section>
-  </main>
+  <!-- Container for top word + audio -->
+  <section id="top-word-container"></section>
+
+  <!-- Container for POS sections (nouns, verbs, etc.) -->
+  <section id="pos-sections-container"></section>
 
   <script src="script.js"></script>
 </body>
